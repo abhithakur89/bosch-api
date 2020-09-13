@@ -21,5 +21,9 @@ namespace BoschApi.Entities.Data
         public int GateId { get; set; }
         public virtual Gate Gate { get; set; }
 
+        public virtual ICollection<EntryRecord> EntryRecords { get; set; }
+        public virtual ICollection<ExitRecord> ExitRecords { get; set; }
+        public virtual ICollection<EntryCount> EntryCounts { get; set; }
+        public virtual ICollection<CrowdDensityLevel> CrowdDensityLevels { get; set; }
     }
 }

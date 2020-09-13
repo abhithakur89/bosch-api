@@ -4,14 +4,16 @@ using BoschApi.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BoschApi.Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200913031710_AddedEntryExitCounts")]
+    partial class AddedEntryExitCounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,25 +42,6 @@ namespace BoschApi.Entities.Migrations
                     b.HasIndex("GateId");
 
                     b.ToTable("Cameras");
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.CrowdDensityLevel", b =>
-                {
-                    b.Property<int>("CrowdDensityLevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CameraId");
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<string>("Level");
-
-                    b.HasKey("CrowdDensityLevelId");
-
-                    b.HasIndex("CameraId");
-
-                    b.ToTable("CrowdDensityLevels");
                 });
 
             modelBuilder.Entity("BoschApi.Entities.Data.EntryCount", b =>
@@ -170,14 +153,6 @@ namespace BoschApi.Entities.Migrations
                     b.HasOne("BoschApi.Entities.Data.Gate", "Gate")
                         .WithMany("Cameras")
                         .HasForeignKey("GateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.CrowdDensityLevel", b =>
-                {
-                    b.HasOne("BoschApi.Entities.Data.Camera", "Camera")
-                        .WithMany("CrowdDensityLevels")
-                        .HasForeignKey("CameraId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

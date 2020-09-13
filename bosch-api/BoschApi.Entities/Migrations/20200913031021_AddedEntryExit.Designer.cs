@@ -4,14 +4,16 @@ using BoschApi.Entities.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BoschApi.Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200913031021_AddedEntryExit")]
+    partial class AddedEntryExit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,44 +44,6 @@ namespace BoschApi.Entities.Migrations
                     b.ToTable("Cameras");
                 });
 
-            modelBuilder.Entity("BoschApi.Entities.Data.CrowdDensityLevel", b =>
-                {
-                    b.Property<int>("CrowdDensityLevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CameraId");
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<string>("Level");
-
-                    b.HasKey("CrowdDensityLevelId");
-
-                    b.HasIndex("CameraId");
-
-                    b.ToTable("CrowdDensityLevels");
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.EntryCount", b =>
-                {
-                    b.Property<int>("EntryCountId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CameraId");
-
-                    b.Property<int>("Count");
-
-                    b.Property<DateTime>("Date");
-
-                    b.HasKey("EntryCountId");
-
-                    b.HasIndex("CameraId");
-
-                    b.ToTable("EntryCounts");
-                });
-
             modelBuilder.Entity("BoschApi.Entities.Data.EntryRecord", b =>
                 {
                     b.Property<int>("EntryRecordId")
@@ -95,25 +59,6 @@ namespace BoschApi.Entities.Migrations
                     b.HasIndex("CameraId");
 
                     b.ToTable("EntryRecords");
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.ExitCount", b =>
-                {
-                    b.Property<int>("ExitCountId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CameraId");
-
-                    b.Property<int>("Count");
-
-                    b.Property<DateTime>("Date");
-
-                    b.HasKey("ExitCountId");
-
-                    b.HasIndex("CameraId");
-
-                    b.ToTable("ExitCounts");
                 });
 
             modelBuilder.Entity("BoschApi.Entities.Data.ExitRecord", b =>
@@ -173,34 +118,10 @@ namespace BoschApi.Entities.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("BoschApi.Entities.Data.CrowdDensityLevel", b =>
-                {
-                    b.HasOne("BoschApi.Entities.Data.Camera", "Camera")
-                        .WithMany("CrowdDensityLevels")
-                        .HasForeignKey("CameraId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.EntryCount", b =>
-                {
-                    b.HasOne("BoschApi.Entities.Data.Camera", "Camera")
-                        .WithMany("EntryCounts")
-                        .HasForeignKey("CameraId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("BoschApi.Entities.Data.EntryRecord", b =>
                 {
                     b.HasOne("BoschApi.Entities.Data.Camera", "Camera")
                         .WithMany("EntryRecords")
-                        .HasForeignKey("CameraId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("BoschApi.Entities.Data.ExitCount", b =>
-                {
-                    b.HasOne("BoschApi.Entities.Data.Camera", "Camera")
-                        .WithMany()
                         .HasForeignKey("CameraId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
