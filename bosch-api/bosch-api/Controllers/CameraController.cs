@@ -281,15 +281,21 @@ namespace bosch_api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /gettodayentries?cameraid=1&recordcount=10
+        ///     GET /gettodayentries?cameraid=1&recordcount=2
         /// 
         /// Sample response:
         /// 
         ///     {
-        ///         "respcode": 1200
-        ///         "count": 5
+        ///         "respcode": 1200,
+        ///         "count": 3,
         ///         "records": [
         ///             {
+        ///                 "timestamp": "2020-09-13T14:47:25",
+        ///                 "count": 2
+        ///             },
+        ///             {
+        ///                 "timestamp": "2020-09-13T14:46:15",
+        ///                 "count": 1
         ///             }
         ///         ]
         ///     }
@@ -342,6 +348,78 @@ namespace bosch_api.Controllers
             }
         }
 
+        /// <summary>
+        /// Read today's exits..
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /gettodayexits?cameraid=1&recordcount=10
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200,
+        ///         "count": 3,
+        ///         "records": [
+        ///             {
+        ///                 "timestamp": "2020-09-13T14:47:25",
+        ///                 "count": 2
+        ///             },
+        ///             {
+        ///                 "timestamp": "2020-09-13T14:46:15",
+        ///                 "count": 1
+        ///             }
+        ///         ]
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("gettodayexits")]
+        public ActionResult GetTodayExits(int cameraid, int recordcount)
+        {
+            try
+            {
+                _logger.LogInformation("GetTodayExits() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+                var count = Context.ExitCounts
+                    .Where(x => x.Date == dateTime.Date && x.CameraId == cameraid)
+                    ?.Select(x => x.Count)
+                    ?.FirstOrDefault() ?? 0;
+
+                var records = Context.ExitRecords
+                    .Where(x => x.CameraId == cameraid && x.Timestamp.Date == dateTime.Date)
+                    ?.GroupBy(x => x.Timestamp)
+                    ?.Select(x => new { Timestamp = x.Key, Count = x.Count() })
+                    ?.OrderByDescending(x => x.Timestamp)
+                    ?.Take(recordcount);
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                    count,
+                    records
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
 
 
     }
