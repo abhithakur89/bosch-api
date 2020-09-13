@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace bosch_api.SignalRHub
 {
-    public class BoschApiHub: Hub<IBoschApiHubClient>
+    public class BoschApiHub: Hub<IBoschApiHubClient>, IBoschApiHub
     {
         private IConfiguration Configuration;
         private readonly ILogger<BoschApiHub> _logger;
@@ -23,19 +23,19 @@ namespace bosch_api.SignalRHub
             _logger = logger;
         }
 
-        public async Task NewIn(string message)
+        public async Task BroadcastEntry(int cameraId)
         {
-
+            await Clients.Others.NewIn(cameraId);
         }
 
-        public async Task NewOut(string message)
+        public async Task BroadcastExit(int cameraId)
         {
-
+            await Clients.Others.NewOut(cameraId);
         }
 
-        public async Task CrowdDensityChanged(string message)
+        public async Task BroadcastCrowdDensityChanged(int cameraId, int density)
         {
-
+            await Clients.Others.CrowdDensityChanged(cameraId, density);
         }
     }
 }

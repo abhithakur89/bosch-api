@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Dropbox.Api;
 using Dropbox.Api.Files;
 using System.IO;
+using bosch_api.SignalRHub;
 
 namespace bosch_api.Controllers
 {
@@ -22,6 +23,7 @@ namespace bosch_api.Controllers
     {
         private readonly IConfiguration Configuration;
         private readonly ILogger<CameraController> _logger;
+        private readonly IBoschApiHub BoschApiHub;
         private ApplicationDbContext Context { get; set; }
         private static object lockEntryObject = new object();
         private static object lockExitObject = new object();
@@ -34,11 +36,13 @@ namespace bosch_api.Controllers
             SystemError = 1201,
         }
 
-        public CameraController(IConfiguration configuration, ApplicationDbContext applicationDbContext, ILogger<CameraController> logger)
+        public CameraController(IConfiguration configuration, ApplicationDbContext applicationDbContext, ILogger<CameraController> logger, 
+            IBoschApiHub boschApiHub)
         {
             Configuration = configuration;
             Context = applicationDbContext;
             _logger = logger;
+            BoschApiHub = boschApiHub;
         }
 
         /// <summary>
@@ -183,6 +187,9 @@ namespace bosch_api.Controllers
                         Context.SaveChangesAsync();
                     }
                 }
+
+                BoschApiHub.BroadcastEntry(cameraid);
+
                 return new JsonResult(new
                 {
                     respcode = ResponseCodes.Successful,
@@ -260,6 +267,9 @@ namespace bosch_api.Controllers
                         Context.SaveChangesAsync();
                     }
                 }
+
+                BoschApiHub.BroadcastExit(cameraid);
+                
                 return new JsonResult(new
                 {
                     respcode = ResponseCodes.Successful,
@@ -464,6 +474,9 @@ namespace bosch_api.Controllers
                     Context.CrowdDensityLevels.Add(crowdDensityLevel);
                     Context.SaveChangesAsync();
                 }
+
+                BoschApiHub.BroadcastCrowdDensityChanged(cameraid, crowdLevel);
+
                 return new JsonResult(new
                 {
                     respcode = ResponseCodes.Successful,

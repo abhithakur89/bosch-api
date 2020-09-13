@@ -7,8 +7,8 @@ namespace bosch_api.SignalRHub
 {
     public interface IBoschApiHubClient
     {
-        Task NewIn();
-        Task NewOut();
-        Task CrowdDensityChanged(string density);
+        Task NewIn(int cameraId);
+        Task NewOut(int cameraId);
+        Task CrowdDensityChanged(int cameraId, int density);
     }
 }

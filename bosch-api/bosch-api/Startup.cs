@@ -61,6 +61,8 @@ namespace bosch_api
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddScoped<IBoschApiHub, BoschApiHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
