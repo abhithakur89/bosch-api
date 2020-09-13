@@ -27,6 +27,8 @@ namespace bosch_api.Helper
             }
             catch (Exception)
             {
+                // Not working somehow. DOn't know why Convert to Singapore time
+                //return utcTime.AddHours(8);
                 throw new Exception($"Cannot convert {utcTime} to {toTimezone}");
             }
         }
