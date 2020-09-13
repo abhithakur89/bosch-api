@@ -20,7 +20,8 @@ namespace bosch_api.Controllers
         private readonly IConfiguration Configuration;
         private readonly ILogger<CameraController> _logger;
         private ApplicationDbContext Context { get; set; }
-        private static object lockObject = new object();
+        private static object lockEntryObject = new object();
+        private static object lockExitObject = new object();
 
         private enum ResponseCodes
         {
@@ -38,7 +39,7 @@ namespace bosch_api.Controllers
         }
 
         /// <summary>
-        /// GetAllSites API. Returns all sites info.
+        /// GetAllSites API. Returns all cameras info.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -121,7 +122,7 @@ namespace bosch_api.Controllers
         }
 
         /// <summary>
-        /// Entry API. Returns all sites info.
+        /// Entry API. Add new entry.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -140,6 +141,7 @@ namespace bosch_api.Controllers
         /// </remarks>
         /// <returns>
         /// </returns>
+        
         [HttpGet]
         [Route("addnewentry")]
         public ActionResult AddNewEntry(int cameraid)
@@ -149,7 +151,7 @@ namespace bosch_api.Controllers
                 _logger.LogInformation("AddNewEntry() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
                 DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
 
-                lock (lockObject)
+                lock (lockEntryObject)
                 {
                     EntryRecord entryRecord = new EntryRecord();
                     entryRecord.Timestamp = dateTime;
@@ -175,6 +177,84 @@ namespace bosch_api.Controllers
                     else
                     {
                         entryCount.Count = entryCount.Count + 1;
+                        Context.SaveChangesAsync();
+                    }
+                }
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
+
+        //*******************************************
+        /// <summary>
+        /// Entry API. Add new exit.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /addnewexit?cameraid=1
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("addnewexit")]
+        public ActionResult AddNewExit(int cameraid)
+        {
+            try
+            {
+                _logger.LogInformation("AddNewExit() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+                lock (lockEntryObject)
+                {
+                    ExitRecord exitRecord = new ExitRecord();
+                    exitRecord.Timestamp = dateTime;
+                    exitRecord.CameraId = cameraid;
+
+                    Context.ExitRecords.Add(exitRecord);
+
+                    var exitCount = Context.ExitCounts
+                        .Where(x => x.CameraId == cameraid && x.Date == dateTime.Date)
+                        ?.Select(x => x)
+                        ?.FirstOrDefault();
+
+                    if (exitCount == null)
+                    {
+                        ExitCount newExitCount = new ExitCount();
+                        newExitCount.Date = dateTime.Date;
+                        newExitCount.CameraId = cameraid;
+                        newExitCount.Count = 1;
+
+                        Context.ExitCounts.Add(newExitCount);
+                        Context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        exitCount.Count = exitCount.Count + 1;
                         Context.SaveChangesAsync();
                     }
                 }
