@@ -147,7 +147,6 @@ namespace bosch_api.Controllers
             try
             {
                 _logger.LogInformation("AddNewEntry() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
-                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
 
                 var tzis = TimeZoneInfo.GetSystemTimeZones();
                 var v = tzis.Select(x => x.Id);
@@ -155,6 +154,8 @@ namespace bosch_api.Controllers
                 {
                     respcode = ResponseCodes.Successful,
                 });
+
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
 
                 lock (lockObject)
                 {
