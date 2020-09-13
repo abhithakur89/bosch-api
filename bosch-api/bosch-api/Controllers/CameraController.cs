@@ -276,7 +276,7 @@ namespace bosch_api.Controllers
         }
 
         /// <summary>
-        /// Read today's entries..
+        /// Read today's entries.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -349,7 +349,7 @@ namespace bosch_api.Controllers
         }
 
         /// <summary>
-        /// Read today's exits..
+        /// Read today's exits.
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -421,6 +421,63 @@ namespace bosch_api.Controllers
             }
         }
 
+        /// <summary>
+        /// Crowd API. Add crowd level.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /crowddensity?cameraid=1&crowdLevel=3
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("crowddensity")]
+        public ActionResult CrowdDensity(int cameraid, int crowdLevel)
+        {
+            try
+            {
+                _logger.LogInformation("CrowdDensity() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+
+                {
+                    CrowdDensityLevel crowdDensityLevel = new CrowdDensityLevel();
+                    crowdDensityLevel.Timestamp = dateTime;
+                    crowdDensityLevel.CameraId = cameraid;
+                    crowdDensityLevel.Level = crowdLevel;
+
+                    Context.CrowdDensityLevels.Add(crowdDensityLevel);
+                    Context.SaveChangesAsync();
+                }
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
 
     }
 }

@@ -13,12 +13,12 @@ namespace BoschApi.Entities.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CrowdDensityLevelId { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Timestamp { get; set; }
 
         [ForeignKey("CameraId")]
         public int CameraId { get; set; }
         public virtual Camera Camera { get; set; }
 
-        public string Level { get; set; }
+        public int Level { get; set; }
     }
 }
