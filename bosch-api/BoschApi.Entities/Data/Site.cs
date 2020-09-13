@@ -6,6 +6,7 @@ using System.Text;
 
 namespace BoschApi.Entities.Data
 {
+    [Table("Sites")]
     public class Site
     {
         [Key]
@@ -14,6 +15,8 @@ namespace BoschApi.Entities.Data
         public string SiteName { get; set; }
 
         public string SiteDescription { get; set; }
+
+        public virtual ICollection<Gate> Gates { get; set; }
 
     }
 }

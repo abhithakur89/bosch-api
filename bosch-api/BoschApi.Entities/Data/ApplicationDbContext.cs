@@ -13,5 +13,6 @@ namespace BoschApi.Entities.Data
         }
 
         public DbSet<Site> Sites { get; set; }
+        public DbSet<Gate> Gates { get; set; }
     }
 }
