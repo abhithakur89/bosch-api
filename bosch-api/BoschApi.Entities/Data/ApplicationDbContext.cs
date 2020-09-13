@@ -11,5 +11,7 @@ namespace BoschApi.Entities.Data
             : base(options)
         {
         }
+
+        public DbSet<Site> Sites { get; set; }
     }
 }
