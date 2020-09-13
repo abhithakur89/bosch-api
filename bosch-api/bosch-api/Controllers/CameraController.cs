@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Dropbox.Api;
+using Dropbox.Api.Files;
+using System.IO;
 
 namespace bosch_api.Controllers
 {
@@ -477,6 +480,79 @@ namespace bosch_api.Controllers
                     Error = e.Message
                 });
             }
+        }
+
+        /// <summary>
+        /// GetLatestCapture API. Get the latest screen capture.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /getlatestcapture?cameraid=1
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("getlatestcapture")]
+        public ActionResult GetLatestCapture(int cameraid, int crowdLevel)
+        {
+            try
+            {
+                _logger.LogInformation("GetLatestCapture() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+                DropboxClient dropboxClient = new DropboxClient(Configuration["DropboxToken"]);
+
+                var filePath = DownloadLatestFile(dropboxClient).Result;
+
+                var image = System.IO.File.OpenRead(filePath);
+                return File(image, "image/jpeg");
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
+
+        private async Task<string> DownloadLatestFile(DropboxClient dbx)
+        {
+            var list = await dbx.Files.ListFolderAsync(Configuration["DropboxFolder"]);
+
+            var v = list.Entries
+                ?.Where(x => x.IsFile)
+                ?.OrderByDescending(x => x.AsFile.ServerModified)
+                ?.FirstOrDefault();
+
+            string localFilePath = Path.Combine(System.IO.Path.GetTempPath(), v.Name);
+
+            using (var response = await dbx.Files.DownloadAsync(v.PathLower))
+            {
+                using (var fileStream = System.IO.File.Create(localFilePath))
+                {
+                    (await response.GetContentAsStreamAsync()).CopyTo(fileStream);
+                }
+            }
+
+            return localFilePath;
         }
 
     }
