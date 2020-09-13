@@ -491,10 +491,8 @@ namespace bosch_api.Controllers
         ///     GET /getlatestcapture?cameraid=1
         /// 
         /// Sample response:
-        /// 
-        ///     {
-        ///         "respcode": 1200
-        ///     }
+        ///     Latest Captured picture
+        ///     
         ///     
         /// Response codes:
         ///     1200 = "Successful"
@@ -505,7 +503,7 @@ namespace bosch_api.Controllers
 
         [HttpGet]
         [Route("getlatestcapture")]
-        public ActionResult GetLatestCapture(int cameraid, int crowdLevel)
+        public ActionResult GetLatestCapture()
         {
             try
             {
