@@ -14,6 +14,7 @@ using Dropbox.Api;
 using Dropbox.Api.Files;
 using System.IO;
 using bosch_api.SignalRHub;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace bosch_api.Controllers
 {
@@ -23,7 +24,6 @@ namespace bosch_api.Controllers
     {
         private readonly IConfiguration Configuration;
         private readonly ILogger<CameraController> _logger;
-        private readonly IBoschApiHub BoschApiHub;
         private ApplicationDbContext Context { get; set; }
         private static object lockEntryObject = new object();
         private static object lockExitObject = new object();
@@ -36,13 +36,11 @@ namespace bosch_api.Controllers
             SystemError = 1201,
         }
 
-        public CameraController(IConfiguration configuration, ApplicationDbContext applicationDbContext, ILogger<CameraController> logger, 
-            IBoschApiHub boschApiHub)
+        public CameraController(IConfiguration configuration, ApplicationDbContext applicationDbContext, ILogger<CameraController> logger)
         {
             Configuration = configuration;
             Context = applicationDbContext;
             _logger = logger;
-            BoschApiHub = boschApiHub;
         }
 
         /// <summary>
@@ -186,9 +184,11 @@ namespace bosch_api.Controllers
                         entryCount.Count = entryCount.Count + 1;
                         Context.SaveChangesAsync();
                     }
-                }
 
-                BoschApiHub.BroadcastEntry(cameraid);
+                    SignalRHubConnection.GetInstance(Configuration["SignalRHubUrl"])
+                        .SendAsync("BroadcastEntry", cameraid);
+
+                }
 
                 return new JsonResult(new
                 {
@@ -268,8 +268,10 @@ namespace bosch_api.Controllers
                     }
                 }
 
-                BoschApiHub.BroadcastExit(cameraid);
-                
+                //BoschApiHub.BroadcastExit(cameraid);
+                SignalRHubConnection.GetInstance(Configuration["SignalRHubUrl"])
+                    .SendAsync("BroadcastExit", cameraid);
+
                 return new JsonResult(new
                 {
                     respcode = ResponseCodes.Successful,
@@ -475,7 +477,9 @@ namespace bosch_api.Controllers
                     Context.SaveChangesAsync();
                 }
 
-                BoschApiHub.BroadcastCrowdDensityChanged(cameraid, crowdLevel);
+                //BoschApiHub.BroadcastCrowdDensityChanged(cameraid, crowdLevel);
+                SignalRHubConnection.GetInstance(Configuration["SignalRHubUrl"])
+                    .SendAsync("BroadcastCrowdDensityChanged", cameraid, crowdLevel);
 
                 return new JsonResult(new
                 {
