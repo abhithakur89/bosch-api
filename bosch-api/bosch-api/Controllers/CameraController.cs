@@ -153,6 +153,7 @@ namespace bosch_api.Controllers
                 return new JsonResult(new
                 {
                     respcode = ResponseCodes.Successful,
+                    v
                 });
 
                 DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
