@@ -339,7 +339,7 @@ namespace bosch_api.Controllers
                 var records = Context.EntryRecords
                     .Where(x => x.CameraId == cameraid && x.Timestamp.Date == dateTime.Date)
                     ?.GroupBy(x => x.Timestamp)
-                    ?.Select(x => new { Timestamp = x.Key, Count = x.Count() })
+                    ?.Select(x => new { Timestamp = x.Key.ToString("dd/MM/yyyy HH:mm:ss"), Count = x.Count() })
                     ?.OrderByDescending(x => x.Timestamp)
                     ?.Take(recordcount);
 
@@ -412,7 +412,7 @@ namespace bosch_api.Controllers
                 var records = Context.ExitRecords
                     .Where(x => x.CameraId == cameraid && x.Timestamp.Date == dateTime.Date)
                     ?.GroupBy(x => x.Timestamp)
-                    ?.Select(x => new { Timestamp = x.Key, Count = x.Count() })
+                    ?.Select(x => new { Timestamp = x.Key.ToString("dd/MM/yyyy HH:mm:ss"), Count = x.Count() })
                     ?.OrderByDescending(x => x.Timestamp)
                     ?.Take(recordcount);
 
