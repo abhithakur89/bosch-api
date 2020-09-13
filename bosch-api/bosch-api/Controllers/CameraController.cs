@@ -342,7 +342,7 @@ namespace bosch_api.Controllers
                     ?.Select(x => new { Timestamp = x.Key, Count = x.Count() })
                     ?.OrderByDescending(x => x.Timestamp)
                     ?.Take(recordcount)
-                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss") });
+                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss"), x.Count });
 
                 return new JsonResult(new
                 {
@@ -416,7 +416,7 @@ namespace bosch_api.Controllers
                     ?.Select(x => new { Timestamp = x.Key, Count = x.Count() })
                     ?.OrderByDescending(x => x.Timestamp)
                     ?.Take(recordcount)
-                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss") });
+                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss"), x.Count  });
 
                 return new JsonResult(new
                 {
