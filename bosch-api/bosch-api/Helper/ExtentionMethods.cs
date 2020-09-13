@@ -17,5 +17,18 @@ namespace bosch_api.Helper
 
             return (enumType.GetField(enumValue.ToString()).GetCustomAttribute<DisplayAttribute>()?.Name) ?? enumString;
         }
+
+        public static DateTime ToTimezone(this DateTime utcTime, string toTimezone)
+        {
+            try
+            {
+                TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(toTimezone);
+                return TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Cannot convert {utcTime} to {toTimezone}");
+            }
+        }
     }
 }

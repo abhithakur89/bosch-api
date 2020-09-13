@@ -13,13 +13,14 @@ using System.Threading.Tasks;
 
 namespace bosch_api.Controllers
 {
-    [Route("api")]
+    //[Route("api")]
     [ApiController]
     public class CameraController : ControllerBase
     {
         private readonly IConfiguration Configuration;
         private readonly ILogger<CameraController> _logger;
         private ApplicationDbContext Context { get; set; }
+        private static object lockObject = new object();
 
         private enum ResponseCodes
         {
@@ -42,7 +43,7 @@ namespace bosch_api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/getallcameras?siteid=1
+        ///     GET /getallcameras?siteid=1
         /// 
         /// Sample response:
         /// 
@@ -118,5 +119,82 @@ namespace bosch_api.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Entry API. Returns all sites info.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /addnewentry?cameraid=1
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200,
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+        [HttpGet]
+        [Route("addnewentry")]
+        public ActionResult AddNewEntry(int cameraid)
+        {
+            try
+            {
+                _logger.LogInformation("AddNewEntry() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+                lock (lockObject)
+                {
+                    EntryRecord entryRecord = new EntryRecord();
+                    entryRecord.Timestamp = dateTime;
+                    entryRecord.CameraId = cameraid;
+
+                    Context.EntryRecords.Add(entryRecord);
+
+                    var entryCount = Context.EntryCounts
+                        .Where(x => x.CameraId == cameraid && x.Date == dateTime.Date)
+                        ?.Select(x=>x)
+                        ?.FirstOrDefault();
+
+                    if (entryCount == null)
+                    {
+                        EntryCount newEntryCount = new EntryCount();
+                        newEntryCount.Date = dateTime.Date;
+                        newEntryCount.CameraId = cameraid;
+                        newEntryCount.Count = 1;
+
+                        Context.EntryCounts.Add(newEntryCount);
+                        Context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        entryCount.Count = entryCount.Count + 1;
+                        Context.SaveChangesAsync();
+                    }
+                }
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
+
     }
 }

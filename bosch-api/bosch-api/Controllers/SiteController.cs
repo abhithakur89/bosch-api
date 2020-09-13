@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace bosch_api.Controllers
 {
-    [Route("api")]
+    //[Route("api")]
     [ApiController]
     public class SiteController: ControllerBase
     {
@@ -41,7 +41,7 @@ namespace bosch_api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/getallsites
+        ///     GET /getallsites
         ///      
         /// Sample response:
         /// 
