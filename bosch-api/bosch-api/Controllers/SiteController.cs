@@ -41,7 +41,7 @@ namespace bosch_api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/getallsites
+        ///     GET /api/getallsites
         ///      
         /// Sample response:
         /// 
@@ -67,7 +67,7 @@ namespace bosch_api.Controllers
         /// </remarks>
         /// <returns>
         /// </returns>
-        [HttpPost]
+        [HttpGet]
         [Route("getallsites")]
         public ActionResult GetAllSites()
         {

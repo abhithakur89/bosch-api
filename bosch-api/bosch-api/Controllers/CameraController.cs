@@ -42,10 +42,7 @@ namespace bosch_api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/getallcameras
-        ///     {     
-        ///         "siteid":"1"
-        ///     }
+        ///     GET /api/getallcameras?siteid=1
         /// 
         /// Sample response:
         /// 
@@ -74,24 +71,24 @@ namespace bosch_api.Controllers
         /// </remarks>
         /// <returns>
         /// </returns>
-        [HttpPost]
+        [HttpGet]
         [Route("getallcameras")]
-        public ActionResult GetAllCameras([FromBody]JObject jsiteId)
+        public ActionResult GetAllCameras(int siteId)
         {
             try
             {
                 _logger.LogInformation("GetAllCameras() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
 
-                var received = new { SiteId = string.Empty };
+                //var received = new { SiteId = string.Empty };
 
-                received = JsonConvert.DeserializeAnonymousType(jsiteId.ToString(Formatting.None), received);
+                //received = JsonConvert.DeserializeAnonymousType(jsiteId.ToString(Formatting.None), received);
 
-                _logger.LogInformation($"Paramerters: {received.SiteId}");
+                //_logger.LogInformation($"Paramerters: {received.SiteId}");
 
-                if (!int.TryParse(received.SiteId, out int nSiteId)) throw new Exception("Invalid Site Id");
+                //if (!int.TryParse(received.SiteId, out int nSiteId)) throw new Exception("Invalid Site Id");
 
                 var cameras = Context.Cameras
-                    .Where(x => x.Gate.SiteId == nSiteId)
+                    .Where(x => x.Gate.SiteId == siteId)
                     .Select(x => new
                     {
                         x.CameraId,
