@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bosch-api", "bosch-api\bosch-api.csproj", "{B58A9CE5-E4B2-424C-ACCA-7D91669EEC8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoschApi.Entities", "BoschApi.Entities\BoschApi.Entities.csproj", "{F23DA686-C380-42A3-91C6-F195C286B580}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B58A9CE5-E4B2-424C-ACCA-7D91669EEC8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B58A9CE5-E4B2-424C-ACCA-7D91669EEC8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B58A9CE5-E4B2-424C-ACCA-7D91669EEC8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B58A9CE5-E4B2-424C-ACCA-7D91669EEC8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23DA686-C380-42A3-91C6-F195C286B580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23DA686-C380-42A3-91C6-F195C286B580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23DA686-C380-42A3-91C6-F195C286B580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23DA686-C380-42A3-91C6-F195C286B580}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD7B704E-B22C-4DB1-8E98-679F51142BEE}
+	EndGlobalSection
+EndGlobal
