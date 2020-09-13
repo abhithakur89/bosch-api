@@ -24,8 +24,8 @@ namespace bosch_api.Helper
             {
                 TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(toTimezone);
                 DateTime dt = TimeZoneInfo.ConvertTimeFromUtc(utcTime, tz);
-                dt = dt.AddMilliseconds(-dt.Millisecond);
-                return dt;
+
+                return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
             }
             catch (Exception)
             {
