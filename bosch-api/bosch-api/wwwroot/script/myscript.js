@@ -93,11 +93,11 @@ connection.on("CrowdDensityChanged", (cameraId, density) => {
 
 	var label = document.getElementById("alertTimestamp");
 	var today = new Date();
-	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-	var dateTime = date + ' ' + time;
+	//var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	//var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	//var dateTime = date + ' ' + time;
 
-	label.innerHTML = dateTime;
+	label.innerHTML = formatDate(today);
 });
 
 // Quick and simple export target #table_id into a csv
@@ -131,12 +131,33 @@ function download_table_as_csv(table_id) {
     document.body.removeChild(link);
 }
 
-//function setImageVisible(id, visible) {
-//    var img = document.getElementById(id);
-//    img.style.visibility = (visible ? 'visible' : 'hidden');
-//}
+function formatDate(dateVal) {
+	var newDate = new Date(dateVal);
+
+	var sMonth = padValue(newDate.getMonth() + 1);
+	var sDay = padValue(newDate.getDate());
+	var sYear = newDate.getFullYear();
+	var sHour = newDate.getHours();
+	var sMinute = padValue(newDate.getMinutes());
+	var sAMPM = "AM";
+
+	var iHourCheck = parseInt(sHour);
+
+	if (iHourCheck > 12) {
+		sAMPM = "PM";
+		sHour = iHourCheck - 12;
+	}
+	else if (iHourCheck === 0) {
+		sHour = "12";
+	}
+
+	sHour = padValue(sHour);
+
+	return sMonth + "-" + sDay + "-" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
+}
+
+function padValue(value) {
+	return (value < 10) ? "0" + value : value;
+}
 
 start();
-//setImageVisible("alramimage",false);
-//setImageVisible();
-//setImageVisible();
