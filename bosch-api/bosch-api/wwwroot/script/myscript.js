@@ -18,75 +18,40 @@ connection.onclose(async () => {
 
 connection.on("NewIn", (cameraId) => {
     console.log("NewIn: " + cameraId);
-	
-	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=50000")
-		.then(response =>{
-			return response.json();
-		})
-		.then(data=>{
-			var table = document.getElementById("EntryTable");
-			
-			while (table.rows.length > 1) {
-				table.deleteRow(1);
-			}
-			
-			for (var i = 0; i < data.records.length; i++) {
-				
-				var tr = table.insertRow(-1);
-
-				if (i >= 20) {
-					tr.style.display='none'
-				}
-				
-				for (var j = 0; j < 2; j++) {
-					var tabCell = tr.insertCell(-1);
-					
-					if(j==0)
-					{
-						tabCell.innerHTML = data.records[i].timestamp;
-					}
-					else
-					{
-						tabCell.style.textAlign = "center";
-						tabCell.innerHTML = data.records[i].count;
-					}
-				}
-			}
-			var label = document.getElementById("entryCount");
-			label.innerHTML = data.count;
-		})
+	PopupEntry();
 });
 
 connection.on("NewOut", (cameraId) => {
     console.log("NewOut: " + cameraId);
-	
+	PopupExit();
+});
+
+async function PopupExit() {
 	fetch("https://bosch-api.azurewebsites.net/gettodayexits?cameraid=1&recordcount=50000")
-		.then(response =>{
+		.then(response => {
 			return response.json();
 		})
-		.then(data=>{
+		.then(data => {
 			var table = document.getElementById("ExitTable");
-			
+
 			while (table.rows.length > 1) {
 				table.deleteRow(1);
 			}
-			
+
 			for (var i = 0; i < data.records.length; i++) {
-				
+
 				var tr = table.insertRow(-1);
 				if (i >= 20) {
 					tr.style.display = 'none'
 				}
-				
+
 				for (var j = 0; j < 2; j++) {
 					var tabCell = tr.insertCell(-1);
-					
-					if(j==0)
-					{
+
+					if (j == 0) {
 						tabCell.innerHTML = data.records[i].timestamp;
 					}
-					else
-					{
+					else {
 						tabCell.style.textAlign = "center";
 						tabCell.innerHTML = data.records[i].count;
 					}
@@ -95,7 +60,46 @@ connection.on("NewOut", (cameraId) => {
 			var label = document.getElementById("exitCount");
 			label.innerHTML = data.count;
 		})
-});
+};
+
+async function PopupEntry() {
+	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=50000")
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			var table = document.getElementById("EntryTable");
+
+			while (table.rows.length > 1) {
+				table.deleteRow(1);
+			}
+
+			for (var i = 0; i < data.records.length; i++) {
+
+				var tr = table.insertRow(-1);
+
+				if (i >= 20) {
+					tr.style.display = 'none'
+				}
+
+				for (var j = 0; j < 2; j++) {
+					var tabCell = tr.insertCell(-1);
+
+					if (j == 0) {
+						tabCell.innerHTML = data.records[i].timestamp;
+					}
+					else {
+						tabCell.style.textAlign = "center";
+						tabCell.innerHTML = data.records[i].count;
+					}
+				}
+			}
+			var label = document.getElementById("entryCount");
+			label.innerHTML = data.count;
+		})
+};
+
+
 
 connection.on("CrowdDensityChanged", (cameraId, density) => {
 	console.log("CrowdDensityChanged: " + cameraId + ", " + density);
@@ -170,3 +174,5 @@ function padValue(value) {
 }
 
 start();
+PopupExit();
+PopupEntry();
