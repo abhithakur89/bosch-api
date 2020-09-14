@@ -19,12 +19,11 @@ connection.onclose(async () => {
 connection.on("NewIn", (cameraId) => {
     console.log("NewIn: " + cameraId);
 	
-	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=20")
+	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=50000")
 		.then(response =>{
 			return response.json();
 		})
 		.then(data=>{
-			console.log(data);
 			var table = document.getElementById("EntryTable");
 			
 			while (table.rows.length > 1) {
@@ -34,6 +33,10 @@ connection.on("NewIn", (cameraId) => {
 			for (var i = 0; i < data.records.length; i++) {
 				
 				var tr = table.insertRow(-1);
+
+				if (i >= 20) {
+					tr.style.display='none'
+				}
 				
 				for (var j = 0; j < 2; j++) {
 					var tabCell = tr.insertCell(-1);
@@ -57,12 +60,11 @@ connection.on("NewIn", (cameraId) => {
 connection.on("NewOut", (cameraId) => {
     console.log("NewOut: " + cameraId);
 	
-	fetch("https://bosch-api.azurewebsites.net/gettodayexits?cameraid=1&recordcount=20")
+	fetch("https://bosch-api.azurewebsites.net/gettodayexits?cameraid=1&recordcount=50000")
 		.then(response =>{
 			return response.json();
 		})
 		.then(data=>{
-			console.log(data);
 			var table = document.getElementById("ExitTable");
 			
 			while (table.rows.length > 1) {
@@ -72,6 +74,9 @@ connection.on("NewOut", (cameraId) => {
 			for (var i = 0; i < data.records.length; i++) {
 				
 				var tr = table.insertRow(-1);
+				if (i >= 20) {
+					tr.style.display = 'none'
+				}
 				
 				for (var j = 0; j < 2; j++) {
 					var tabCell = tr.insertCell(-1);
@@ -87,7 +92,6 @@ connection.on("NewOut", (cameraId) => {
 					}
 				}
 			}
-			console.log("Exitcount: " + data.count);
 			var label = document.getElementById("exitCount");
 			label.innerHTML = data.count;
 		})
