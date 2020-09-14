@@ -49,6 +49,8 @@ connection.on("NewIn", (cameraId) => {
 					}
 				}
 			}
+			var label = document.getElementById("entryCount");
+			label.innerHTML = data.count;
 		})
 });
 
@@ -85,6 +87,9 @@ connection.on("NewOut", (cameraId) => {
 					}
 				}
 			}
+			console.log("Exitcount: " + data.count);
+			var label = document.getElementById("exitCount");
+			label.innerHTML = data.count;
 		})
 });
 
