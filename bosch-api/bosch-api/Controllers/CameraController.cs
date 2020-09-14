@@ -556,7 +556,7 @@ namespace bosch_api.Controllers
 
             var v = list.Entries
                 ?.Where(x => x.IsFile)
-                ?.OrderByDescending(x => x.AsFile.ServerModified)
+                ?.OrderByDescending(x => x.AsFile.ClientModified)
                 ?.FirstOrDefault();
 
             string localFilePath = Path.Combine(System.IO.Path.GetTempPath(), v.Name);
