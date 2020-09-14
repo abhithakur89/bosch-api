@@ -552,11 +552,22 @@ namespace bosch_api.Controllers
 
         private async Task<string> DownloadLatestFile(DropboxClient dbx)
         {
-            var list = await dbx.Files.ListFolderAsync(Configuration["DropboxFolder"]);
+            bool hasMore = true;
+            ListFolderResult list = null;
+
+            while (hasMore)
+            {
+                if (list == null)
+                    list = await dbx.Files.ListFolderAsync(Configuration["DropboxFolder"]);
+                else
+                    list = await dbx.Files.ListFolderContinueAsync(list.Cursor);
+
+                hasMore = list.HasMore;
+            }
 
             var v = list.Entries
                 ?.Where(x => x.IsFile)
-                ?.OrderByDescending(x => x.AsFile.ClientModified)
+                ?.OrderByDescending(x => x.AsFile.ServerModified)
                 ?.FirstOrDefault();
 
             string localFilePath = Path.Combine(System.IO.Path.GetTempPath(), v.Name);
