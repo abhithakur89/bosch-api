@@ -19,7 +19,7 @@ connection.onclose(async () => {
 connection.on("NewIn", (cameraId) => {
     console.log("NewIn: " + cameraId);
 	
-	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=50000")
+	fetch("https://bosch-api.azurewebsites.net/gettodayentries?cameraid=1&recordcount=20")
 		.then(response =>{
 			return response.json();
 		})
@@ -57,7 +57,7 @@ connection.on("NewIn", (cameraId) => {
 connection.on("NewOut", (cameraId) => {
     console.log("NewOut: " + cameraId);
 	
-	fetch("https://bosch-api.azurewebsites.net/gettodayexits?cameraid=1&recordcount=50000")
+	fetch("https://bosch-api.azurewebsites.net/gettodayexits?cameraid=1&recordcount=20")
 		.then(response =>{
 			return response.json();
 		})
