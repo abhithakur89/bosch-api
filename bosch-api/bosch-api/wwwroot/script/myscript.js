@@ -89,7 +89,15 @@ connection.on("NewOut", (cameraId) => {
 });
 
 connection.on("CrowdDensityChanged", (cameraId, density) => {
-    console.log("CrowdDensityChanged: " + cameraId + ", " + density);
+	console.log("CrowdDensityChanged: " + cameraId + ", " + density);
+
+	var label = document.getElementById("alertTimestamp");
+	var today = new Date();
+	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	var dateTime = date + ' ' + time;
+
+	label.innerHTML = dateTime;
 });
 
 // Quick and simple export target #table_id into a csv
