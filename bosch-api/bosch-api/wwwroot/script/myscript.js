@@ -103,10 +103,13 @@ async function PopupEntry() {
 
 connection.on("CrowdDensityChanged", (cameraId, density) => {
 	console.log("CrowdDensityChanged: " + cameraId + ", " + density);
-
-	var label = document.getElementById("alertTimestamp");
 	var today = new Date();
-	label.innerHTML = formatDate(today);
+	DisplayAlarm(density, formatDate(today));
+});
+
+function DisplayAlarm(density, dt) {
+	var label = document.getElementById("alertTimestamp");
+	label.innerHTML = dt;
 
 	var alramimage = document.getElementById("alramimage");
 	var crowdimage = document.getElementById("crowdimage");
@@ -125,7 +128,8 @@ connection.on("CrowdDensityChanged", (cameraId, density) => {
 		crowdimage.style.display = 'none';
 		goodimage.style.display = 'none';
 	}
-});
+
+}
 
 // Quick and simple export target #table_id into a csv
 function download_table_as_csv(table_id) {
@@ -222,6 +226,18 @@ function getLatestAlarms() {
 		});
 }
 
+async function PopupInitialAlarm() {
+	fetch("https://bosch-api.azurewebsites.net/getlatestalarmlevel?cameraid=1")
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			DisplayAlarm(data.level, data.timestamp)
+		})
+};
+
+
 start();
 PopupExit();
 PopupEntry();
+PopupInitialAlarm();
