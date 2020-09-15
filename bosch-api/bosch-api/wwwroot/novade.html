@@ -350,9 +350,9 @@
                                                                                         <BR>
                                                                                         <img id="alramimage" src="images/ico_alarm.png" height="100" /><br>
 
-                                                                                        <img id="crowdimage" src="images/ico_crowd.png" height="100"/><br>
+                                                                                        <img id="crowdimage" src="images/ico_crowd.png" height="100" /><br>
 
-                                                                                        <img id="goodimage" src="images/ico_good.png" height="100"/><br>
+                                                                                        <img id="goodimage" src="images/ico_good.png" height="100" /><br>
 
                                                                                     </td>
                                                                                 </tr>
@@ -365,7 +365,6 @@
                                                                                     </td>
                                                                                 </tr>
                                                                             </table>
-                                                                            <table id="alarmTable" style="display:none" onclick="getLatestAlarms()" />
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -378,7 +377,7 @@
                                                                                             <a href="https://bosch-api.azurewebsites.net/getlatestcapture" onclick="window.open('https://bosch-api.azurewebsites.net/getlatestcapture', 'snapshot', 'menubar=no, location=no, toolbar=no, scrollbars=no, height=460, width=460'); return false;">
                                                                                                 <img src="images/ico_jpeg.png" border="0" width="32" height="32" alt="Click to view snapshot"><a>
                                                                                                     &nbsp;&nbsp;
-                                                                                                    <img src="images/ico_statlog.png" border="0" width="32" height="32" />
+                                                                                                    <img src="images/ico_statlog.png" border="0" width="32" height="32" onclick="getLatestAlarms()" />
                                                                                                     <!-- <span class="timestamp" style="color:#acacac; text-decoration:none">Click to view snapshot</span> -->
 
                                                                                                 </a>
@@ -508,5 +507,6 @@
             </td>
         </tr>
     </table>
+    <table id="alarmTable" style="display:none" onclick="getLatestAlarms()" />
 </body>
 </html>
