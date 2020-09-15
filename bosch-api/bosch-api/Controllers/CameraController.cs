@@ -583,5 +583,66 @@ namespace bosch_api.Controllers
             return localFilePath;
         }
 
+        /// <summary>
+        /// Get today's alarm level.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /gettodayalarmlevel?cameraid=1&recordcount=1
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200,
+        ///         "records": [
+        ///             {
+        ///                 "timestamp": "2020-09-13T14:47:25",
+        ///                 "level": 1
+        ///             }
+        ///         ]
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("gettodayalarmlevel")]
+        public ActionResult GetTodayAlarmLevel(int cameraid, int recordcount)
+        {
+            try
+            {
+                _logger.LogInformation("GetTodayAlarmLevel() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+                DateTime dateTime = DateTime.UtcNow.ToTimezone(Configuration["Timezone"]);
+
+                var records = Context.CrowdDensityLevels
+                    .Where(x => x.CameraId == cameraid && x.Timestamp.Date == dateTime.Date)
+                    ?.OrderByDescending(x => x.Timestamp)
+                    ?.Take(recordcount)
+                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss"), x.Level });
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                    records
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
+
     }
 }
