@@ -644,5 +644,62 @@ namespace bosch_api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get latest alarm level.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /getlatestalarmlevel?cameraid=1
+        /// 
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "respcode": 1200,
+        ///         "timestamp": "2020-09-13T14:47:25",
+        ///         "level": "2"
+        ///     }
+        ///     
+        /// Response codes:
+        ///     1200 = "Successful"
+        ///     1201 = "Error"
+        /// </remarks>
+        /// <returns>
+        /// </returns>
+
+        [HttpGet]
+        [Route("getlatestalarmlevel")]
+        public ActionResult GetLatestAlarmLevel(int cameraid)
+        {
+            try
+            {
+                _logger.LogInformation("GetLatestAlarmLevel() called from: " + HttpContext.Connection.RemoteIpAddress.ToString());
+
+                var record = Context.CrowdDensityLevels
+                    .Where(x => x.CameraId == cameraid)
+                    ?.OrderByDescending(x => x.Timestamp)
+                    ?.Select(x => new { Timestamp = x.Timestamp.ToString("dd/MM/yyyy HH:mm:ss"), x.Level })
+                    ?.FirstOrDefault();
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.Successful,
+                    record.Timestamp,
+                    record.Level
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Generic exception handler invoked. {e.Message}: {e.StackTrace}");
+
+                return new JsonResult(new
+                {
+                    respcode = ResponseCodes.SystemError,
+                    description = ResponseCodes.SystemError.DisplayName(),
+                    Error = e.Message
+                });
+            }
+        }
+
     }
 }
