@@ -187,6 +187,43 @@ function padValue(value) {
 	return (value < 10) ? "0" + value : value;
 }
 
+function getLatestAlarms() {
+	fetch("https://bosch-api.azurewebsites.net/gettodayalarmlevel?cameraid=1&recordcount=50000")
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			var table = document.getElementById("alarmTable");
+
+			while (table.rows.length > 0) {
+				table.deleteRow(1);
+			}
+
+			var hr = table.insertRow(-1);
+			var hc1 = hr.insertCell(-1);
+			hc1.innerHTML = "Timestamp";
+			var hc2 = hr.insertCell(-1);
+			hc2.innerHTML = "Level";
+
+			for (var i = 0; i < data.records.length; i++) {
+
+				var tr = table.insertRow(-1);
+				for (var j = 0; j < 2; j++) {
+					var tabCell = tr.insertCell(-1);
+
+					if (j == 0) {
+						tabCell.innerHTML = data.records[i].timestamp;
+					}
+					else {
+						tabCell.innerHTML = data.records[i].level;
+					}
+				}
+			}
+		});
+
+	download_table_as_csv('alarmTable');
+}
+
 start();
 PopupExit();
 PopupEntry();
