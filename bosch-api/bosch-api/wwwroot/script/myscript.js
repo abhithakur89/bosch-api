@@ -195,9 +195,7 @@ function getLatestAlarms() {
 		.then(data => {
 			var table = document.getElementById("alarmTable");
 
-			while (table.rows.length > 0) {
-				table.deleteRow(1);
-			}
+			table.innerHTML = "";
 
 			var hr = table.insertRow(-1);
 			var hc1 = hr.insertCell(-1);
