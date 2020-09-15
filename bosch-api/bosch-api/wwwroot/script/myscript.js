@@ -219,9 +219,9 @@ function getLatestAlarms() {
 					}
 				}
 			}
-		});
 
-	download_table_as_csv('alarmTable');
+			download_table_as_csv('alarmTable');
+		});
 }
 
 start();
