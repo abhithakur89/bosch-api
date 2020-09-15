@@ -107,6 +107,24 @@ connection.on("CrowdDensityChanged", (cameraId, density) => {
 	var label = document.getElementById("alertTimestamp");
 	var today = new Date();
 	label.innerHTML = formatDate(today);
+
+	var alramimage = document.getElementById("alramimage");
+	var crowdimage = document.getElementById("crowdimage");
+	var goodimage = document.getElementById("goodimage");
+
+	if (density == 1) {
+		alramimage.style.display = 'none';
+		crowdimage.style.display = 'none';
+		goodimage.style.display = '';
+	} else if (density == 2) {
+		alramimage.style.display = 'none';
+		crowdimage.style.display = '';
+		goodimage.style.display = 'none';
+	} else if (density == 3) {
+		alramimage.style.display = '';
+		crowdimage.style.display = 'none';
+		goodimage.style.display = 'none';
+	}
 });
 
 // Quick and simple export target #table_id into a csv
